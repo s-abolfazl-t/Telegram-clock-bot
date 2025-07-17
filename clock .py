@@ -1,41 +1,29 @@
+# main.py
 import asyncio
-import time
 from telethon import TelegramClient
-from telethon.tl.functions.account import UpdateProfileRequest
+from datetime import datetime
+from smallfont import to_small
 
-# === اطلاعات شخصی (از my.telegram.org بگیر) ===
-API_ID = 18479322              # به عدد واقعی‌ات تغییر بده
-API_HASH = '0a5fd8e7a6df8040dcc46b7ae8ff5576'   # به API HASH واقعی‌ات تغییر بده
-SESSION = 'clock_session'    # هر نامی خواستی بذار (برای ساخت فایل session)
-# ==============================================
+# — این‌ها رو از My.telegram (my.telegram.org) بگیر
+API_ID = int(18479322)  # عدد API ID
+API_HASH = "0a5fd8e7a6df8040dcc46b7ae8ff5576"   # رشته API HASH
 
-# جدول تبدیل اعداد به فونت Small
-small_digits = {
-    '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄',
-    '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉',
-    ':': ':'
-}
+# این فایل session بعد از لاگین ایجاد می‌شه:
+session = "overlay_clock"
 
-def to_small(text):
-    return ''.join(small_digits.get(ch, ch) for ch in text)
+async def main():
+    async with TelegramClient(session, API_ID, API_HASH) as client:
+        print("✅ وارد شدی. اجرا شروع شد.")
+        me = await client.get_me()
+        base = me.first_name or me.username or "ᴄʀᴀᴢʏ!"
 
-client = TelegramClient(SESSION, API_ID, API_HASH)
-
-async def update_name():
-    await client.start()
-    while True:
-        now = time.strftime("%H:%M")
-        small_time = to_small(now)
-        try:
-            await client(UpdateProfileRequest(first_name=f"{small_time} ⏰"))
-            print(f"✅ نام آپدیت شد: {small_time}")
-        except Exception as e:
-            print("❌ خطا:", e)
-        await asyncio.sleep(60)
-
-def main():
-    with client:
-        client.loop.run_until_complete(update_name())
+        while True:
+            now = datetime.now().strftime("%H:%M")
+            small = to_small(now)
+            new_name = f"{base} | {small}"
+            await client(functions.account.UpdateProfileRequest(first_name=new_name))
+            print("🕒 نام و ساعت آپدیت شد:", new_name)
+            await asyncio.sleep(60)  # هر ۶۰ ثانیه آپدیت
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
