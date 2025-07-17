@@ -20,7 +20,7 @@ async def main():
         while True:
             now = datetime.now().strftime("%H:%M")
             small = to_small(now)
-            new_name = f"{base} | {small}"
+            new_name = f"{base}  {small}"
             await client(functions.account.UpdateProfileRequest(first_name=new_name))
             print("🕒 نام و ساعت آپدیت شد:", new_name)
             await asyncio.sleep(60)  # هر ۶۰ ثانیه آپدیت
