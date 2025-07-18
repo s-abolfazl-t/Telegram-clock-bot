@@ -1,1 +1,2 @@
-telethon>=1.30.0
+telethon
+smallfont
